@@ -38,3 +38,5 @@ function calculate(operation) {
         resultElement.style.color = 'red';
     }
 }
+
+calculate();
