@@ -27,7 +27,7 @@ jobs:
         run: npm ci
       
       - name: Run linter
-        run: npm run lint || echo "No linter configured"
+        run: npm run lint ||ecjp "No linter configured"
       
       - name: Run tests
         run: npm test -- --coverage
