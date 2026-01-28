@@ -39,6 +39,12 @@ jobs:
           flags: unittests
           name: codecov-umbrella
 
+      - name: Upload coverage report
+        uses: action/upload-artifact@v4
+        with: 
+            name: coverage-report-node-${{ matrix.node-version}}
+            path: coverage/
+
       - name: Comment coverage on PR
         if: github.event_name == 'pull_request'
         uses: romeovs/lcov-reporter-action@v0.3.1
