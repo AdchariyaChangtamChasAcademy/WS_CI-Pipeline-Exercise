@@ -1,4 +1,4 @@
-const TodoManager = require("./src/TodoManager");
+const TodoManager = require('../src/todoManager');
 
 describe("TodoManager", () => {
   let manager;
