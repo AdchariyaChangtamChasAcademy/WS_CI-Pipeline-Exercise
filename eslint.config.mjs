@@ -30,7 +30,8 @@ export default [
     languageOptions: {
       globals: {
         ...jest.environments.globals.globals
-      }
+      },
+      sourceType: "script" 
     },
     rules: {
       ...jest.configs.recommended.rules
