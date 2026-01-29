@@ -2,18 +2,22 @@ import js from "@eslint/js";
 import jest from "eslint-plugin-jest";
 
 export default [
-  // Ignorera genererade filer
+  // Ignore generated and dependency files
   {
-    ignores: ["coverage/**", "node_modules/**"]
+    ignores: ["coverage/**", "node_modules/**", "script.js"]
   },
 
-  // Node + CommonJS-kod
+  // Node + CommonJS code
   {
     files: ["**/*.js"],
     languageOptions: {
       globals: {
         require: "readonly",
-        module: "readonly"
+        module: "readonly",
+        fetch: "readonly",           // Node 18+ global
+        AbortController: "readonly", // Node 18+ global
+        setTimeout: "readonly",
+        clearTimeout: "readonly"
       }
     },
     rules: {
@@ -21,23 +25,23 @@ export default [
     }
   },
 
-  // Jest testfiler
+  // Jest test files
   {
     files: ["**/*.test.js"],
-    plugins: {
-      jest
-    },
+    plugins: { jest },
     languageOptions: {
       globals: {
-        ...jest.environments.globals.globals
+        ...jest.environments.globals.globals, // Jest globals
+        fetch: "readonly",                    // mocked fetch
+        AbortController: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+        global: "readonly"                    // global.fetch
       },
-      sourceType: "script" 
+      sourceType: "script"
     },
     rules: {
       ...jest.configs.recommended.rules
     }
-  },
-  {
-    ignores: ["coverage/**", "node_modules/**", "script.js"]
   }
 ];
