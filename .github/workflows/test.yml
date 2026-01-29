@@ -4,15 +4,20 @@ on:
   push:
     branches: [ main, dev ]
   pull_request:
-    branches: [ main, dev ]
+    branches: [ main ]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    name: Test (Node ${{ matrix.node-version }} on ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+
+    timeout-minutes: 10
 
     strategy:
+      fail-fast: true
       matrix:
         node-version: [18.x, 20.x, 22.x]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v4
@@ -29,24 +34,25 @@ jobs:
       - name: Run linter
         run: npm run lint
 
-      - name: Run tests
+      - name: Run tests with coverage
         run: npm test -- --coverage
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
-          files: ./coverage/coverage-final.json
+          files: ./coverage/lcov.info
           flags: unittests
-          name: codecov-umbrella
+          name: codecov-${{ matrix.os }}-node-${{ matrix.node-version }}
+          fail_ci_if_error: true
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report-node-${{ matrix.node-version }}
+          name: coverage-${{ matrix.os }}-node-${{ matrix.node-version }}
           path: coverage/
 
       - name: Comment coverage on PR
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
         uses: romeovs/lcov-reporter-action@v0.3.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
